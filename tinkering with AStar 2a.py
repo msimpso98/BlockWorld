@@ -7,7 +7,9 @@
 #geeks for geeks presentation of A-Star has less symbol switching
 """
 #%%
-#this code gets a full several moves of a single stack output done
+#this code allows a better astar implementation where ALL generated states on a move
+# that are not in the visited list get added to the search queue and MOST IMPORTANTLY the total estimated path
+#cost is calculated before enqing
 #means-end, too greedy to see more than one move ahead, so need to get bona fided astar wroking
 #need to eventually allow for subgoals
 import numpy as np
