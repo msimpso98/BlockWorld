@@ -17,8 +17,8 @@ from queue import *
 
 #modfified astar ignores g, just runs oof of h
 
-# initial_arrangement_1 = [["A", "B", "C"], ["D", "E"]]
-# goal_arrangement_1 = [["A", "C"], ["D", "E", "B"]]
+#initial_arrangement_1 = [["A", "B", "C"], ["D", "E"]]
+#goal_arrangement_1 = [["A", "C"], ["D", "E", "B"]]
 initial_arrangement_0 = [["A", "C"], ["B"]]
 goal_arrangement_0 = [["C", "B", "A"]]
 max_items = 26
@@ -45,27 +45,35 @@ full_list_of_possible_states = [
                                 [[["A","B"], ["C"]],[["C","B","A"]]]
                                 ]
 full_list_of_costs = [[2,3,3], [2, 2, 2, 1, 3, 3], [1, 0]]
+
 #%%
+full_list_of_possible_moves[0]
+
+#%%
+
+
 search_queue.put(initial_arrangement_0 )
 
 move_number = 0
-while not search_queue.empty():
-    lowest_cost_state = search_queue.get()
-    #This is the value you save to your final path 
-    #print(lowest_cost_state)
-    final_states_list.append(lowest_cost_state)
+goal_reached = False
+while not search_queue.empty() and not goal_reached:
+    current_state = search_queue.get()
+    
     #placeholder for entire games possible moves and possible states
     possible_moves = full_list_of_possible_moves[move_number]
     possible_states = full_list_of_possible_states[move_number]
     #is this where I put the parent node into the visited list?
-    visited_list.append(lowest_cost_state)
+    visited_list.append(current_state)
     move_costs = full_list_of_costs[move_number]
     min_cost = max_items
     print(move_number)
-    #state is PARENT state
+    #place holders for move gen and cost calc
+    possible_moves = full_list_of_possible_moves[move_number]
+    possible_states = full_list_of_possible_states[move_number]
+
+    #likely collapse goal and input states into respective merged ordered dicts
     for i, state in enumerate(possible_states):
-        possible_moves = full_list_of_possible_moves[move_number]
-        possible_states = full_list_of_possible_states[move_number]
+        #calc cost of each move
         move = possible_moves[i]
         #print(move)
         #print(move)
@@ -75,6 +83,7 @@ while not search_queue.empty():
             #ALSO the final move to append to your list of moves
             final_moves_list.append(move)
             final_states_list.append(state)
+            goal_reached = True
             print( f"Goal Reached {possible_states[i]} at move {move}, {move_number + 1}")
             break
         elif state in visited_list:
@@ -82,19 +91,8 @@ while not search_queue.empty():
             continue
         else:
             #calc_cost
-            #set as min cost
-            if move_costs[i] < min_cost:
-                min_cost = move_costs[i]
-                min_state = state
-                min_move = move
-            else:
-                visited_list.append(state)
+            search_queue.put(state)
     #min_move is the last move, min_state is the pentultimate state
-    if min_state not in visited_list:
-        #YOUR INTERMEDIATE MOVES ARE HER
-        print(min_move)
-        final_moves_list.append(min_move)
-        search_queue.put(min_state)
     qsize = search_queue.qsize()
     visted_list_len = len(visited_list)     
     move_number += 1
