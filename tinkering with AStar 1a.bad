@@ -15,39 +15,56 @@ from queue import *
 
 #modfified astar ignores g, just runs oof of h
 
-# initial_arrangement_1 = [["A", "B", "C"], ["D", "E"]]
-# goal_arrangement_1 = [["A", "C"], ["D", "E", "B"]]
-initial_arrangement_0 = [["A", "C"], ["B"]]
-goal_arrangement_0 = [["C", "B", "A"]]
+initial_arrangement_1 = [["A", "B", "C"], ["D", "E"]]
+goal_arrangement_1 = [["A", "C"], ["D", "E", "B"]]
+
+
+#initial_arrangement_0 = [["A", "C"], ["B"]]
+#goal_arrangement_0 = [["C", "B", "A"]]
 max_items = 26
 
 #initialize game, single stack goal state
+initial_arrangement = initial_arrangement_1
+goal_arrangement = goal_arrangement_1
+
 search_queue = PriorityQueue(maxsize=max_items)
 visited_list = []
 final_moves_list = []
 final_states_list = []
 # enqueue initial state
-initial_state = (3, initial_arrangement_0, ("Start", "Start"))
+initial_cost = 3
+initial_state = (initial_cost, initial_arrangement, ("Start", "Start"))
 
 
 
 #%%
-full_list_of_possible_moves = ((("C", "Table"), ("C", "B"), ("B","C")),
-                               (("A","B"), ("A","C"), ("B","A"), ("B","C"), ("C","A"), ("C","B")),
-                               (("B","A"), ("A","B")))
+full_list_of_possible_moves = ((("C", "Table"),("C","E")), 
+                               (("C", "B"), ("B","C"), ("B","E")),
+                               (("C","B"),("C", "Table")),
+                               (("A","C"), ("C", "A")))
 
-full_list_of_possible_states = [ 
-    [[["A", "B", "C"]], [["A"], ["B","C"]],[["A","C", "B"], ["B"]] ],
-                                [[["B","A"],["C"]], [["B"],["C","A"]],[["A","B"],["C"]],
-                                [["A"],["C","B"]],[["A","C"],["B"]], [["A"],["B","C"]]],
-                                [[["A","B"], ["C"]],[["C","B","A"]]]
-                                ]
-full_list_of_costs = [[2,3,3], [2, 2, 2, 1, 3, 3], [1, 0]]
+full_list_of_possible_states = [
+[[["A","B"], ["D","E"], ["C"]],
+[["A","B"], ["D","E", "C"]]],
+[[["A","B","C"], ["D","E"]], 
+[["A"], ["D","E"], ["C","B"]],
+[["A"], ["D","E","B"], ["C"]]],
+[[["A","B","C"], ["D","E"]],
+[["A","B"], ["D","E"], ["C"]]],
+[[["A"], ["D","E","B","C"]],
+[["A","C"], ["D","E","B"]]]
+]
+  
+                                
+full_list_of_costs = [[2,3,3], [2, 2,  1], [ 2, 2], [1, 0]]
 #%%
-search_queue.put(initial_arrangement_0 )
+
+
+
+search_queue.put(initial_arrangement )
 
 move_number = 0
-while not search_queue.empty():
+while not search_queue.empty() and not goal_reached:
     lowest_cost_state = search_queue.get()
     #This is the value you save to your final path 
     #print(lowest_cost_state)
@@ -62,12 +79,10 @@ while not search_queue.empty():
     print(move_number)
     #state is PARENT state
     for i, state in enumerate(possible_states):
-        possible_moves = full_list_of_possible_moves[move_number]
-        possible_states = full_list_of_possible_states[move_number]
         move = possible_moves[i]
         #print(move)
         #print(move)
-        if state == goal_arrangement_0:
+        if state == goal_arrangement:
             #print(move_number, state, move)
             #THIS is the final state to append to your final path
             #ALSO the final move to append to your list of moves
@@ -89,11 +104,12 @@ while not search_queue.empty():
                 visited_list.append(state)
     #min_move is the last move, min_state is the pentultimate state
     if min_state not in visited_list:
-        #YOUR INTERMEDIATE MOVES ARE HER
+        #YOUR INTERMEDIATE MOVES ARE HERE
         print(min_move)
         final_moves_list.append(min_move)
         search_queue.put(min_state)
     qsize = search_queue.qsize()
+    print(f"qsize: {qsize}")
     visted_list_len = len(visited_list)     
     move_number += 1
 
