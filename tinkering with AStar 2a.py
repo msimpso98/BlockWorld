@@ -16,6 +16,8 @@
 import numpy as np
 from queue import *
 
+import icecream as ic
+
 #modfified astar ignores g, just runs oof of h
 
 
@@ -66,7 +68,7 @@ full_list_of_costs = [[2,3,3], [2, 2,  1], [ 2, 2], [1, 0]]
 
 #%%
 
-
+#switch from state to block stacks when adapting this for project
 search_queue.put(initial_arrangement )
 
 move_number = 0
@@ -108,6 +110,7 @@ while not search_queue.empty() and not goal_reached:
             goal_reached = True
             print( f"Goal Reached {possible_states[i]} at move {move}, {move_number + 1}")
             break
+        #if needing to save memory, make visited_list into a set
         elif state in visited_list:
             #print(state)
             continue
