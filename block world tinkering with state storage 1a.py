@@ -141,8 +141,8 @@ def initialize_round(input_state_list, goal_state_list):
 
 #variable inspector in spyder is sorting dict by key
 input_stacks1b, goal_stacks1b = initialize_round(input_state, goal_state)
-print(input_stacks1b)
-print(goal_stacks1b)
+#print(input_stacks1b)
+#print(goal_stacks1b)
 
 #%%
 #https://www.askpython.com/python/dictionary/compare-two-dictionaries
@@ -221,8 +221,8 @@ def subgoal_met(input_stack, goal_stack):
 subgoal_met(input_stacks1b[1], goal_stacks1b[1])
 
 # %%
-for input_stack in input_stacks1b:
-    print(correct_so_far(input_stack, goal_stacks1b))
+# for input_stack in input_stacks1b:
+#     print(correct_so_far(input_stack, goal_stacks1b))
 
 #%%
 def goal_met(input_stacks, goal_stacks):
@@ -259,7 +259,10 @@ position_list = []
 # print(pesky1)
 #%%
 
-#generates possible moves, skips pulling from stacks that are 'correct so far'
+#generates possible moves, skips pulling from stacks that are 'correct so far', 
+#skips putting on stacks not completely correct
+#double nested loops ar O(nsq) time complexity, so if you had 26 stacks, this 
+#manoever would examine 650 moves, not excluding ienti
 move_number = 0
 def get_and_vet_possible_moves(input_stacks, goal_stacks, move_number):
     possible_moves = []
@@ -281,7 +284,7 @@ def get_and_vet_possible_moves(input_stacks, goal_stacks, move_number):
         for j, input_stack in enumerate(input_stacks):
             if (i != j) and (i != dont_pull_from) and (j != dont_put_on):
                 #print(i,j)
-                print(list(input_stacks[i].keys())[-1], list(input_stacks[j].keys())[-1])
+                #print(list(input_stacks[i].keys())[-1], list(input_stacks[j].keys())[-1])
                 possible_moves.append((list(input_stacks[i].keys())[-1], list(input_stacks[j].keys())[-1]))
                 position_crosswalk.append((i,j))
     return possible_moves, position_crosswalk
