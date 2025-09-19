@@ -36,10 +36,42 @@ def timeout_handler():
     print("Timeout occurred!")
     
 # end borrowed code    
-    
 
+
+# begin borrowed code, node class adapted form my
+# previous coursework and python alg book
+#node data is never stored in the node    
+#node data, i.e., state is stored in a defaultdict(list) keyed by node number
 class Node():
-   pass 
+    # "".join([layer, parent_node_letter, str(subnode_number).rjust(2,"0")])
+
+    def __init__(self, node_number, parent_node_number, move_number, delta_score, move):
+        self.node_number = node_number
+        self.parent_node_number = parent_node_number
+        #zero-indexed so the current move number should give the parents total cost
+        self.generating_move = move
+        self.cost_up_to_here = move_number
+        self.delta_score = delta_score
+        self.estimated_total_cost = np.sum(self.cost_up_to_here, delta_score)
+        
+    def get_cost(self, type = "delta"):
+        if type == "delta":
+            return self.delta_score
+        elif type == "up_to_here":
+            return self.cost_up_to_here
+        elif type == "estimated_total":
+            return self.estimated_total_cost
+        else:
+            return -1
+
+    def get_parent_node_number(self):
+        return self.parent_node_number
+
+    def get_node_number(self):
+        return self.node_number
+
+       
+    
     
 class BlockWorldAgent:
     #@profile
@@ -48,9 +80,22 @@ class BlockWorldAgent:
         
         #agent is initialized ONCE for the entire main program, so you need to
         #reset between solve() runs
+        self.graph = defaultdict(list)
+        self.graph_data = defaultdict(list)
         self.MAX_ITEMS = 26
  
+    def add_edge_to_graph(self, parent_node, child_node):
+        self.graph[parent_node].append(child_node)
         
+    def get_reverse_path(self, final_node):
+        counter = 0
+        while counter >= 0:
+            print(self.graph[counter])
+            counter -= 1
+    
+    def store_node_data(self, node_number, stacks):
+        self.graph_data[node_number].append(stacks)
+    
     #@profile
     def make_letter_stack(self, letter_list):
         letter_list = copy.deepcopy(letter_list)
@@ -211,7 +256,7 @@ class BlockWorldAgent:
         #current_state will need updating if move = 0
         #current_state = copy.deepcopy(current_state)
 
-        
+        #will need to revist to learn optimal n of stacks to add given inputs
         if move_number == 0:
             current_stacks.append(addon_odict)
                 
@@ -280,8 +325,6 @@ class BlockWorldAgent:
             #place holders for move gen and cost calc
             
             for i, move in enumerate(possible_moves):
-                #print(move)
-                #make stacks for this move and calc delta
                 new_state = self.make_states_for_move(current_state, position_crosswalk[i], move)
                 print(f"Move: {move_number}, Iteration {i}: move: {move}, priority: {new_state.get_priority()}, stacks: {new_state.get_item()}")
                 print("New State is being populated correctly")
@@ -308,7 +351,7 @@ class BlockWorldAgent:
                     self.search_queue.put(new_state) 
  
             
-            if timer.alive():
+            if timer.is_alive():
                 timer.cancel()
             move_number += 1         
      
