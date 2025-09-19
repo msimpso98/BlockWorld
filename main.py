@@ -17,7 +17,6 @@ def test():
     #print(test_agent.get_goal_state())
     #test_agent.solve(dummy_arrangement_0, dummy_arrangement_0)
 
- 
 
 
     #print(test_agent.solve(initial_arrangement_1, goal_arrangement_1))
